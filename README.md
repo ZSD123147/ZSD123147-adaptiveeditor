@@ -40,19 +40,19 @@
 
 **写文章（桌面端）**
 
-![写文章界面](docs/01-write-desktop.png)
+![写文章界面](https://cnccn.icu/zb_users/upload/2026/09/20260926171917179041435749005.jpg)
 
 **手机端三视图**（同一套代码在窄屏下的形态）
 
-![手机端三视图](docs/02-mobile.jpg)
+![手机端三视图](https://cnccn.icu/zb_users/upload/2026/09/20260926171917179041435716115.jpg)
 
 **文章管理**
 
-![文章管理界面](docs/03-manage.png)
+![文章管理界面](https://cnccn.icu/zb_users/upload/2026/09/20260926171918179041435878120.jpg)
 
 **设置**
 
-![设置界面](docs/04-setting.png)
+![设置界面](https://cnccn.icu/zb_users/upload/2026/09/20260926171918179041435859729.jpg)
 
 ## 五、更新日志
 

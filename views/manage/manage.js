@@ -85,10 +85,21 @@
 
     const body = Q.qs('#adeList tbody');
     if (wrap && (!body || body.children.length === 0)) {
+      // 当前页已删空：还有其它页就自动跳到合法页码，不停留在空页
+      if (total > 0) {
+        const per = Math.max(1, parseInt((Q.config.settings && Q.config.settings.manage_perpage) || 20, 10) || 20);
+        const m = /[?&]page=(\d+)/.exec(window.location.search);
+        const cur = Math.max(1, m ? (parseInt(m[1], 10) || 1) : 1);
+        const last = Math.max(1, Math.ceil(total / per));
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', String(Math.min(cur, last)));
+        window.location.replace(url.toString());
+        return;
+      }
       Q.clear(wrap);
       wrap.appendChild(Q.el('p', {
         class: 'ade-empty',
-        text: total > 0 ? '本页已经没有文章了，请用下方的上一页 / 下一页翻到其它页。' : '还没有文章。'
+        text: '还没有文章。'
       }));
     }
 
