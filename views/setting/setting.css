@@ -1,0 +1,88 @@
+/* ==========================================================================
+   自适应编辑器 —— 设置界面样式
+   只补充 core.css 未覆盖的部分：横向设置项栅格、数字输入行、底部操作区
+   ========================================================================== */
+
+.ade-setting .ade-panel-body { padding: 8px 16px 16px; }
+
+/* 桌面端五列一行 */
+.ade-set-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  padding: 6px 0 2px;
+}
+
+.ade-set-cell { min-width: 0; }
+.ade-set-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ade-text-3);
+  font-size: 12px;
+}
+.ade-set-cell .ade-switch { margin: 0; }
+
+/* 双向切换：两个互斥选项做成胶囊，两格 flex:1 平分宽度 */
+.ade-seg {
+  display: flex;
+  width: 100%;
+  max-width: 220px;
+  padding: 2px;
+  border: 1px solid var(--ade-border-strong);
+  border-radius: 999px;
+  background: var(--ade-surface-2);
+}
+.ade-seg-item { position: relative; flex: 1 1 0; min-width: 0; margin: 0; }
+.ade-seg-item input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ade-seg-item span {
+  display: block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: var(--ade-text-2);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.ade-seg-item input:checked + span {
+  background: var(--ade-primary);
+  color: #fff;
+  font-weight: 600;
+}
+.ade-seg-item input:focus-visible + span { box-shadow: 0 0 0 3px rgba(47, 111, 237, .2); }
+
+.ade-numrow { display: flex; align-items: center; gap: 8px; }
+.ade-num { width: 100%; max-width: 120px; min-width: 0; }
+.ade-unit { color: var(--ade-text-3); font-size: 13px; white-space: nowrap; }
+
+.ade-setting-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ade-border);
+}
+.ade-setting-foot .ade-hint { flex: 1 1 220px; margin: 0; }
+
+/* 手机端两列，靠字段顺序自然分组；不再降到一列（降了会破坏分组） */
+@media (max-width: 900px) {
+  .ade-set-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* 再窄只收紧尺寸、不改列数（320px 下每列约 140px） */
+@media (max-width: 640px) {
+  .ade-setting .ade-panel-body { padding: 6px 12px 12px; }
+  .ade-set-grid { gap: 12px 10px; }
+  .ade-num { max-width: 100px; }
+  .ade-set-cell .ade-switch span { font-size: 12.5px; }
+  /* 320px 下字号与内边距再收一档，「纯文本模式」才放得下 */
+  .ade-seg-item span { padding: 3px 6px; font-size: 11.5px; }
+  .ade-setting-foot #adeSave { flex: 1 1 auto; }
+}

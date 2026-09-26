@@ -1,0 +1,459 @@
+/* ==========================================================================
+   自适应编辑器 —— 写文章界面样式
+   只补充本界面独有的部分，通用设计变量与控件样式全部来自 core/core.css。
+   ========================================================================== */
+
+.ade-edit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ade-side-w);
+  gap: var(--ade-gap);
+  align-items: start;
+}
+
+/* ---------- 左栏 ---------- */
+.ade-edit-main .ade-panel-body { padding: 0; }
+
+.ade-title {
+  border: 0;
+  border-bottom: 1px solid var(--ade-border);
+  border-radius: 0;
+  padding: 16px 18px;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.ade-title:focus { border-color: var(--ade-primary); box-shadow: none; }
+
+.ade-toolbar {
+  position: sticky;
+  top: var(--ade-top-h);
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  /* 本面板 .ade-panel-body 内边距为 0，不能再做负边距出血（贴屏下会顶出屏幕），自己留内边距 */
+  padding: 6px 4px 6px 12px;
+  background: var(--ade-surface);
+  border-bottom: 1px solid var(--ade-border);
+}
+
+.ade-tb-group { display: inline-flex; align-items: center; gap: 8px; }
+
+/* 胶囊按钮：容器类型与居中一次性定死（曾因基类没声明 display 导致「标签」胶囊文字偏左上） */
+.ade-tb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 15px;
+  border: 1px solid var(--ade-border);
+  border-radius: 999px;
+  background: var(--ade-surface-2);
+  color: var(--ade-text-2);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.ade-tb:hover {
+  border-color: var(--ade-primary);
+  background: var(--ade-primary-soft);
+  color: var(--ade-primary);
+}
+.ade-tb:active { transform: translateY(1px); }
+.ade-tb:disabled { opacity: .5; cursor: not-allowed; }
+
+/* 字数统计贴右：不能给 flex 增长（撑满后文字会从盒子左缘起排，像紧贴按钮） */
+.ade-stat {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+  padding-right: 2px;
+  color: var(--ade-text-3);
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+/* ---------- 编辑区 ---------- */
+.ade-editor {
+  padding: 18px;
+  min-height: 320px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--ade-text);
+  outline: 0;
+}
+.ade-editor:focus { box-shadow: none; }
+.ade-editor.is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--ade-text-3);
+  pointer-events: none;
+}
+
+.ade-editor p { margin: 0 0 .9em; }
+.ade-editor h1, .ade-editor h2, .ade-editor h3, .ade-editor h4 {
+  margin: 1.3em 0 .6em;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.ade-editor h1 { font-size: 1.5em; }
+.ade-editor h2 { font-size: 1.32em; }
+.ade-editor h3 { font-size: 1.16em; }
+.ade-editor h4 { font-size: 1.05em; }
+.ade-editor ul, .ade-editor ol { margin: 0 0 .9em; padding-left: 1.6em; }
+.ade-editor li { margin: .25em 0; }
+.ade-editor pre {
+  margin: 0 0 .9em;
+  padding: 12px 14px;
+  border-radius: var(--ade-r-md);
+  background: #f6f8fa;
+  border: 1px solid var(--ade-border);
+  font-family: var(--ade-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+.ade-editor code {
+  padding: 1px 5px;
+  border-radius: var(--ade-r-sm);
+  background: var(--ade-surface-2);
+  font-family: var(--ade-mono);
+  font-size: .92em;
+}
+.ade-editor pre code { padding: 0; background: none; }
+.ade-editor a { color: var(--ade-primary); text-decoration: underline; }
+/* 正文图片：按正文 1/4 宽居中呈现。限高防止竖长图撑满编辑区；必须配 object-fit:contain，
+   否则图会被压扁。!important 必须带：粘贴图自带内联尺寸会盖掉普通规则
+   （粘贴入口另有 editor.js 的 normalizeImgSize 摘除内联尺寸） */
+.ade-editor img {
+  display: block !important;
+  margin: 8px auto !important;
+  max-width: 25% !important;
+  max-height: min(70vh, 620px);
+  height: auto !important;
+  object-fit: contain;
+  border-radius: var(--ade-r-sm);
+  cursor: zoom-in;
+}
+.ade-editor img.is-uploading {
+  min-width: 120px;
+  min-height: 60px;
+  opacity: .45;
+  outline: 2px dashed var(--ade-primary);
+}
+.ade-editor img.is-failed { opacity: .55; outline: 2px dashed var(--ade-danger); }
+.ade-editor table { border-collapse: collapse; margin: 0 0 .9em; max-width: 100%; }
+.ade-editor th, .ade-editor td { border: 1px solid var(--ade-border-strong); padding: 5px 9px; }
+.ade-editor th { background: var(--ade-surface-2); font-weight: 600; }
+
+/* 内核用 <hr class="more" /> 表示摘要分隔线（保存时转回 <!--more-->） */
+.ade-editor hr.more {
+  position: relative;
+  height: 0;
+  margin: 20px 0;
+  border: 0;
+  border-top: 2px dashed var(--ade-primary);
+}
+.ade-editor hr.more::after {
+  content: '摘要分隔线';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 8px;
+  background: var(--ade-surface);
+  color: var(--ade-primary);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+/* ---------- 右栏 ---------- */
+.ade-edit-side {
+  position: sticky;
+  top: calc(var(--ade-top-h) + var(--ade-gap));
+  max-height: calc(100vh - var(--ade-top-h) - var(--ade-gap) * 2);
+  overflow-y: auto;
+}
+
+.ade-actions { display: flex; gap: 8px; margin-bottom: 6px; }
+
+/* 分类 / 状态 / 置顶 横向同行 */
+.ade-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--ade-border);
+}
+.ade-trio-cell { min-width: 0; }
+.ade-trio-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ade-text-3);
+  font-size: 12px;
+}
+.ade-trio-cell .ade-select { width: 100%; min-width: 0; }
+/* 时间一行的标签自适应宽度：两个字不必占 88px 固定列，输入框随之左移靠近文字 */
+.ade-edit-side .ade-field .ade-label { flex: 0 0 auto; }
+
+/* 手机端三格保持横向一行（不降到两列/一列）：收紧字号与内边距防溢出 */
+@media (max-width: 640px) {
+  .ade-trio { gap: 8px; }
+  .ade-trio-label { margin-bottom: 4px; font-size: 11.5px; }
+  .ade-trio-cell .ade-select { padding: 7px 24px 7px 8px; font-size: 13px; }
+}
+
+/* 拖拽图片进入编辑区时的提示态 */
+.ade-editor.is-dragover { background: var(--ade-primary-soft); box-shadow: inset 0 0 0 2px var(--ade-primary); }
+
+/* ---------- 自适应 ---------- */
+@media (max-width: 1100px) {
+  .ade-editor { padding: 14px; }
+  .ade-title { padding: 14px; font-size: 18px; }
+}
+
+@media (max-width: 900px) {
+  /* 单列：右栏内容已搬进抽屉，网格间距归零 */
+  .ade-edit { grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+  /* 时间一行保持横向布局，不随全局字段规则堆叠 */
+  .ade-edit-side .ade-field { flex-direction: row; align-items: center; gap: 10px; }
+  .ade-edit-side .ade-field .ade-label { padding-top: 0; }
+
+  /* 右栏内容已搬进抽屉，只剩空壳：摘掉卡片外观（背景/边框/阴影/外边距），
+     内容为空时高度为 0，不留空白；左右 12px 供提示行 */
+  .ade-edit-side {
+    order: 2;
+    position: static;
+    max-height: none;
+    overflow: visible;
+    margin-top: 0;
+    padding: 0 12px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .ade-edit-side .ade-panel-body { padding: 0; }
+  /* 有「已保存」提示时给它自己一点上边距，别贴着编辑器卡片下沿 */
+  .ade-edit-side .ade-saved { margin: 10px 0 0; }
+
+  /* 内容短时让正文卡片吃掉剩余高度；dvh 兼容地址栏伸缩，vh 给老浏览器兜底 */
+  .ade-edit-main {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - var(--ade-top-h) - 60px);
+    min-height: calc(100dvh - var(--ade-top-h) - 60px);
+  }
+  .ade-edit-main .ade-panel-body { flex: 1 1 auto; display: flex; flex-direction: column; }
+  /* 正文跟着长高，留白变成可点击书写区 */
+  .ade-editor { flex: 1 1 auto; }
+
+  /* 发布区改成抽拉式抽屉（见下「手机端：发布区改成抽拉式」一节），发布按钮组
+     与分类/状态/置顶/时间一起被搬进抽屉里。.ade-actions 的底部吸附从这里撤掉 */
+  .ade-toolbar { top: var(--ade-top-h); gap: 8px; padding: 6px 4px 6px 10px; }
+}
+
+@media (max-width: 640px) {
+  /* 工具栏靠换行排布，不做横向滚动（滚动会把字数推出可视区） */
+  .ade-toolbar { gap: 6px; padding: 6px 3px 6px 10px; }
+  .ade-tb-group { flex: 0 0 auto; }
+  .ade-tb { height: 32px; padding: 0 12px; }
+  .ade-title { font-size: 17px; }
+  .ade-editor { font-size: 15px; line-height: 1.8; }
+}
+
+/* ---------- 手机端：发布区改成抽拉式 ---------- */
+/* 窄屏把发布区收成底部抽屉（搬同一份 DOM，不复制控件）；JS 没跑时右栏控件仍在原位 */
+.ade-drawer { display: none; }
+
+@media (max-width: 900px) {
+  /* 抽屉容器：固定底部，关闭只露拉手，用 transform 切换开合 */
+  .ade-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    max-height: 80vh;
+    background: var(--ade-surface);
+    border-top: 1px solid var(--ade-border);
+    border-top-left-radius: var(--ade-r-md);
+    border-top-right-radius: var(--ade-r-md);
+    box-shadow: var(--ade-shadow-up);
+    overflow: hidden;
+    transform: translateY(calc(100% - 48px));
+    transition: transform 0.2s ease;
+  }
+  .ade-drawer.is-open { transform: translateY(0); }
+
+  /* 拉手：全宽按钮（用 button 而非 div，保证键盘/读屏可用） */
+  .ade-drawer-handle {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    width: 100%;
+    margin: 0; padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ade-text);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ade-drawer-handle:active { background: var(--ade-surface-2); }
+  /* 拉手里的三角箭头，打开抽屉时翻转 180°，指示当前状态 */
+  .ade-drawer-handle-icon {
+    display: inline-block;
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid currentColor;
+    transition: transform 0.2s ease;
+  }
+  .ade-drawer.is-open .ade-drawer-handle-icon { transform: rotate(180deg); }
+
+  /* 抽屉内容区：垂直滚动 */
+  .ade-drawer-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  /* 抽屉内三格改纵向一列；文字标签与下拉宽度沿用上方 .ade-trio 基块，只补内边距与字号 */
+  .ade-drawer-body .ade-trio { grid-template-columns: 1fr; }
+  .ade-drawer-body .ade-trio-cell .ade-select { padding: 7px 10px; font-size: 14px; }
+  /* 时间字段：仍是「文字在左、输入框在右」的横向布局（沿用右栏的窄屏规则） */
+  .ade-drawer-body .ade-field { padding: 9px 0; }
+
+  /* 发布按钮组：整行、两枚均分，与上一块用分隔线断开 */
+  .ade-drawer-body .ade-actions {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--ade-border);
+  }
+  .ade-drawer-body .ade-actions .ade-btn { flex: 1 1 0; justify-content: center; }
+
+  /* 下内边距取拉手高度（48px）：长文能滚到拉手上方，短内容留白被拉手盖满，不露灰边 */
+  .ade-main { padding-bottom: 48px; }
+}
+
+/* ---------- 标签 ---------- */
+/* 同一套标签编辑器两处挂载：桌面端嵌右栏、手机端走弹窗；断点须与 editor.js 一致 */
+.ade-field-tags { display: none; }
+@media (min-width: 901px) {
+  .ade-field-tags { display: flex; }
+}
+
+/* 「标签」按钮只在手机端出现；恢复时 display 必须与 .ade-tb 基类一致（inline-flex） */
+.ade-tb[data-cmd="tag"] { display: none; }
+@media (max-width: 900px) {
+  .ade-tb[data-cmd="tag"] { display: inline-flex; }
+}
+
+/* 标签编辑器：输入框在上、芯片在下；min-width:0 一路传下去，长标签名才走省略号不撑破卡片 */
+.ade-tag-editor { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ade-tag-editor .ade-chips { margin-bottom: 0; }
+
+/* 常用标签：站点里用得最多的标签，点一下即绑定/取消，已绑定的高亮 */
+.ade-tag-common-wrap { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ade-tag-common-title { color: var(--ade-text-3); font-size: 12px; }
+.ade-tag-common {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  max-height: 132px;
+  overflow-y: auto;
+}
+.ade-tag-pick {
+  margin: 0;
+  padding: 2px 10px;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid var(--ade-border-strong);
+  border-radius: 999px;
+  background: var(--ade-surface);
+  color: var(--ade-text-2);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.ade-tag-pick:hover { border-color: var(--ade-primary); color: var(--ade-primary); }
+.ade-tag-pick.is-picked {
+  border-color: #cddffb;
+  background: var(--ade-primary-soft);
+  color: var(--ade-primary);
+  font-weight: 600;
+}
+
+/* ---------- 正文图片状态 ---------- */
+/* 上传占位图本身没有内联样式，这里保持它可见、不参与放大查看 */
+.ade-editor img.is-uploading,
+.ade-editor img.is-failed { cursor: default; }
+
+/* 待转存图片：虚线示明尚未写入本站，保存成功后才落库 */
+.ade-editor img.is-pending { outline: 2px dashed var(--ade-warn); }
+
+/* ---------- 图片灯箱（点正文里的图片看原图，可就地删除） ---------- */
+/* 同 .ade-mask/.ade-dialog：自身默认 display:none，靠 .is-open 显示，不依赖全局 [hidden] 兜底 */
+.ade-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  padding: 24px;
+  background: rgba(15, 20, 30, .82);
+  /* 放大后可滚动：不能靠 flex 居中，否则超出部分会被裁掉且滚不到 */
+  overflow: auto;
+}
+.ade-lightbox.is-open { display: flex; }
+.ade-lightbox-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 100%;
+  /* margin:auto + 容器 overflow:auto：比容器小则居中，比容器大则能滚到全部 */
+  margin: auto;
+}
+.ade-lightbox-img {
+  max-width: min(92vw, 1200px);
+  max-height: 74vh;
+  background: var(--ade-surface);
+  border-radius: var(--ade-r-md);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
+}
+.ade-lightbox-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+/* 缩放比例读数与两个缩放按钮同高，数值用等宽数字免得跳动 */
+.ade-lightbox-zoom {
+  min-width: 46px;
+  color: #e8ecf3;
+  font-size: 12.5px;
+  line-height: 30px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .ade-lightbox { padding: 14px; }
+  .ade-lightbox-img { max-height: 66vh; }
+  .ade-lightbox-bar { gap: 6px; }
+}

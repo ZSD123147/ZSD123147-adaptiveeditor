@@ -1,0 +1,252 @@
+/* ==========================================================================
+   自适应编辑器 —— 文章管理界面样式
+   只补充 core.css 未覆盖的部分：搜索框、批量操作条、两行式文章条目
+   ========================================================================== */
+
+/* ---------- 批量操作条 ---------- */
+.ade-batbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px var(--ade-pad-body);
+  background: var(--ade-primary-soft);
+  border-bottom: 1px solid #cddffb;
+  color: var(--ade-primary);
+  font-size: 13px;
+}
+.ade-batbar[hidden] { display: none; }
+.ade-batbar #adeSelInfo { font-weight: 600; }
+
+/* ---------- 搜索框（按钮集成在框内右侧） ---------- */
+.ade-search {
+  position: relative;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 560px;
+}
+.ade-search .ade-input { width: 100%; padding-right: 84px; }
+.ade-search.has-word .ade-input { padding-right: 108px; }
+.ade-search-go {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 3px 12px;
+  border: 1px solid var(--ade-border);
+  border-radius: var(--ade-r-sm);
+  background: var(--ade-surface-2);
+  color: var(--ade-text-2);
+  font-size: 12.5px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.ade-search-go:hover {
+  border-color: var(--ade-primary);
+  color: var(--ade-primary);
+  background: var(--ade-primary-soft);
+}
+.ade-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 66px;
+  transform: translateY(-50%);
+  padding: 0 6px;
+  color: var(--ade-text-3);
+  font-size: 17px;
+  line-height: 1;
+  text-decoration: none;
+}
+.ade-search-clear:hover { color: var(--ade-danger); }
+/* ---------- 列表：桌面端 ---------- */
+/* 表格本体（.ade-table）由 core.css 提供，这里只补它没有的片段 */
+.ade-manage .ade-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  vertical-align: middle;
+  accent-color: var(--ade-primary);
+  cursor: pointer;
+}
+.ade-manage .ade-table tbody tr.is-picked,
+.ade-manage .ade-table tbody tr.is-picked:hover { background: var(--ade-primary-soft); }
+.ade-manage .c-title .ade-title-link { font-weight: 600; }
+.ade-manage .c-act .ade-del { color: var(--ade-danger); border-color: #eec9c5; }
+.ade-manage .c-act .ade-del:hover { background: var(--ade-danger-soft); border-color: var(--ade-danger); }
+.ade-manage .c-act > * + * { margin-left: 6px; }
+
+/* 全选与篇数已迁入表头那一行（见 manage.php 的 thead），这里只管它们自身的排版 */
+.ade-table .c-check { width: auto; white-space: nowrap; }
+.ade-table .c-title { position: relative; }
+/* 全选是纯文字按钮：不承担「被勾选」语义，只触发一次全选/取消动作 */
+.ade-list-all {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ade-text-2);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ade-list-all:hover { color: var(--ade-primary); }
+/* 篇数贴在操作列右端（右缘与「删除」按钮对齐）；没有全选框时它仍在表头行里 */
+.ade-list-count {
+  float: right;
+  color: var(--ade-text-3);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* 分类/状态下拉与搜索框并排；两个下拉允许收缩，否则窄屏会横向溢出 */
+.ade-bar .ade-bar-cate,
+.ade-bar .ade-bar-status {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 150px;
+  min-width: 0;
+}
+.ade-empty a { margin-left: 6px; }
+
+/* ---------- 列表：桌面端（≥901px）排版重构 ---------- */
+/* 改用 table-layout:fixed：列宽只由表头决定，标题吃掉剩余宽度自行换行，其余列不被挤压 */
+@media (min-width: 901px) {
+  .ade-manage .ade-table { table-layout: fixed; }
+
+  .ade-manage .ade-table th { padding: 10px 12px; letter-spacing: .2px; }
+  .ade-manage .ade-table td { padding: 12px; }
+
+  /* 各功能列定宽，标题列不声明宽度即得剩余空间；无 c-check 列时其余列照常成立 */
+  .ade-manage .ade-table th.c-check  { width: 44px; }
+  .ade-manage .ade-table th.c-id     { width: 64px; }
+  .ade-manage .ade-table th.c-cate   { width: 140px; }
+  .ade-manage .ade-table th.c-author { width: 110px; }
+  .ade-manage .ade-table th.c-time   { width: 150px; }
+  /* 操作列容纳列名与篇数：按钮与篇数统一靠右对齐 */
+  .ade-manage .ade-table th.c-act    { width: 168px; }
+  .ade-manage .ade-table td.c-act    { text-align: right; }
+
+  /* 功能列内容一律单行：放不下省略号收尾，绝不逐字竖排、绝不重叠 */
+  .ade-manage .c-cate, .ade-manage .c-author,
+  .ade-manage .c-time, .ade-manage .c-act {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 标题列最多两行（line-clamp）；徽章钉在第一行行首对齐 */
+  .ade-manage .c-title { overflow: hidden; }
+  .ade-manage .ade-title-cell { min-width: 0; align-items: flex-start; gap: 8px; }
+  .ade-manage .c-title .ade-title-link {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.55;
+    font-size: 14px;
+  }
+  .ade-manage .ade-title-cell .ade-badge { margin-top: 2px; }
+
+  /* 信息层次：标题最重，ID 次之，分类/作者居中，时间最弱 */
+  .ade-manage .c-id { font-size: 12.5px; }
+  .ade-manage .c-cate, .ade-manage .c-author { font-size: 13px; }
+  .ade-manage .c-time {
+    color: var(--ade-text-3);
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ade-manage .ade-table tbody tr:hover { background: #f7f9fd; }
+}
+
+/* ---------- 列表：手机端一行拆成两行 ---------- */
+/* 用 grid 而非 flex+order（后者无法强制换行）；操作列靠右且可收缩，320px 也放得下 */
+@media (max-width: 900px) {
+  .ade-manage .ade-table,
+  .ade-manage .ade-table tbody { display: block; width: 100%; }
+
+  /* 表头改造成只显示「全选 / 篇数」的工具条，同一份 DOM 两端复用（复制会导致 id 重复） */
+  .ade-manage .ade-table thead { display: block; }
+  .ade-manage .ade-table thead tr {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    background: var(--ade-surface-2);
+    border-bottom: 1px solid var(--ade-border);
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--ade-text-2);
+  }
+  .ade-manage .ade-table thead th { display: none; padding: 0; border: 0; background: none; }
+  /* 宽度必须一并清成 auto：core.css 给 .c-act 的桌面列宽会原样带到 th，
+     让「共 N 篇」缩在一个 120px 空盒里，篇数与按钮对不齐 */
+  .ade-manage .ade-table thead th.c-check,
+  .ade-manage .ade-table thead th.c-act { display: block; width: auto; }
+  .ade-manage .ade-table thead th.c-act { margin-left: auto; }
+  /* 「操作」这个列名在工具条上没有意义，只留篇数 */
+  .ade-manage .ade-table thead .ade-th-name { display: none; }
+  .ade-manage .ade-list-count { float: none; }
+
+  /* core.css 的固定列宽在 grid 里会成为最小尺寸、把整行撑到 588px，必须先清成 auto */
+  .ade-manage .ade-table td {
+    padding: 0;
+    border-bottom: 0;
+    width: auto;
+    min-width: 0;
+  }
+
+  /* 第一行 ID·标题·徽章，第二行 选择框·分类·作者·时间·操作 */
+  .ade-manage .ade-table tr.ade-row {
+    display: grid;
+    grid-template-columns: auto auto auto auto minmax(0, 1fr);
+    grid-template-areas:
+      "id    title title title title"
+      "check cate  auth  time  act";
+    column-gap: 8px;
+    row-gap: 5px;
+    align-items: center;
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--ade-border);
+  }
+  .ade-manage .ade-table tr.ade-row:last-child { border-bottom: 0; }
+
+  .ade-manage .c-check  { grid-area: check; justify-self: start; }
+  .ade-manage .c-id     { grid-area: id; font-size: 12px; }
+  .ade-manage .c-title  { grid-area: title; min-width: 0; }
+  .ade-manage .c-cate   { grid-area: cate; }
+  .ade-manage .c-author { grid-area: auth; }
+  .ade-manage .c-time   { grid-area: time; font-variant-numeric: tabular-nums; }
+  .ade-manage .c-act    { grid-area: act; justify-self: end; min-width: 0; }
+
+  /* 徽章留在标题行，放不下由标题省略号截断（状态是关键信息不能藏） */
+  .ade-manage .ade-title-cell { min-width: 0; gap: 6px; }
+  .ade-manage .c-title .ade-title-link { font-size: 14px; }
+  .ade-manage .c-cate, .ade-manage .c-author { font-size: 12.5px; white-space: nowrap; }
+  .ade-manage .c-time { color: var(--ade-text-3); font-size: 12.5px; white-space: nowrap; }
+  .ade-manage .c-act > * + * { margin-left: 5px; }
+  .ade-manage .c-act .ade-btn { padding: 5px 10px; }
+  .ade-batbar { padding: 8px 10px; }
+
+  /* 手机端只留窗口内 4 个页码（其余由 manage.php 打 .ade-pg-out）；远端页靠上一页/下一页走到 */
+  .ade-pager .ade-pg-out { display: none; }
+}
+
+/* 手机端：两个筛选下拉与搜索框横向同一行 */
+@media (max-width: 640px) {
+  .ade-bar { gap: 6px; flex-wrap: nowrap; }
+  .ade-bar .ade-bar-cate,
+  .ade-bar .ade-bar-status { flex: 0 1 auto; min-width: 0; max-width: 31%; font-size: 12.5px; }
+  .ade-bar .ade-search { flex: 1 1 0; min-width: 0; max-width: none; }
+  /* 框内按钮与 × 占掉一部分宽度，相应收紧内边距，留给文字可输入的空间 */
+  .ade-bar .ade-search .ade-input { padding-right: 62px; font-size: 13px; }
+  .ade-bar .ade-search.has-word .ade-input { padding-right: 84px; }
+  .ade-bar .ade-search-go { padding: 3px 9px; font-size: 12px; }
+  .ade-bar .ade-search-clear { right: 52px; }
+
+  /* 第二行要并排五项，时间不可压缩，320px 下按钮再收紧留余量 */
+  .ade-manage .c-act .ade-btn { padding: 4px 8px; font-size: 12px; }
+  .ade-manage .ade-table tr.ade-row { column-gap: 6px; }
+}

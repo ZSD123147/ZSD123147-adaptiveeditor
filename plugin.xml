@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="php">
+<id>adaptiveeditor</id>
+<name>自适应编辑器</name>
+<url></url>
+<note>独立的自适应文章编辑器与文章管理，不引入任何第三方组件</note>
+<description>提供一个与后台框架解耦的写作界面：左侧为标题栏与自研富文本编辑区，支持图文混排粘贴、文字与超链接插入、图片上传；右侧集中发布（可通过状态下拉存为草稿）、分类、状态、置顶、标签绑定与新建、发布时间。另附文章管理（搜索、翻页、批量删除）与精简设置各一页。全部界面为插件自带的响应式 CSS，桌面与手机同一套代码；不含任何第三方库、外部字体或 CDN 引用，也不需要重写模板。</description>
+<path>main.php</path>
+<include>include.php</include>
+<level>1</level>
+<author>
+  <name>青竹</name>
+  <email>189993861@qq.com</email>
+  <url></url>
+</author>
+<source>
+  <name></name>
+  <email></email>
+  <url></url>
+</source>
+<adapted>173540</adapted>
+<version>1.0.1</version>
+<pubdate>2026-09-21</pubdate>
+<modified>2026-09-26</modified>
+<price>0</price>
+<phpver>8.0</phpver>
+<advanced>
+  <dependency></dependency>
+  <rewritefunctions></rewritefunctions>
+  <existsfunctions></existsfunctions>
+  <conflict></conflict>
+</advanced>
+<sidebars>
+  <sidebar1></sidebar1>
+  <sidebar2></sidebar2>
+  <sidebar3></sidebar3>
+  <sidebar4></sidebar4>
+  <sidebar5></sidebar5>
+  <sidebar6></sidebar6>
+  <sidebar7></sidebar7>
+  <sidebar8></sidebar8>
+  <sidebar9></sidebar9>
+</sidebars>
+</plugin>
